@@ -19,10 +19,11 @@ class DataclassesIsTypePatch(CallablePatch):
     """Patch broken ClassVar support in dataclasses when ClassVar is accessed via a module other than `typing`."""
 
     target_container: t.ClassVar = dataclasses
-    target_attribute = '_is_type'
+    target_attribute = "_is_type"
 
     @classmethod
     def is_patch_needed(cls) -> bool:
+
         @dataclasses.dataclass
         class CheckClassVar:
             # this is the broken case requiring patching: ClassVar dot-referenced from a module that is not `typing` is treated as an instance field
@@ -48,7 +49,9 @@ class DataclassesIsTypePatch(CallablePatch):
             else:
                 # Look up module_name in the class's module.
                 module = sys.modules.get(cls.__module__)
-                if module and module.__dict__.get(module_name):  # this is the patched line; removed `is a_module`
+                if module and module.__dict__.get(
+                    module_name
+                ):  # this is the patched line; removed `is a_module`
                     ns = sys.modules.get(a_type.__module__).__dict__
             if ns and is_type_predicate(ns.get(match.group(2)), a_module):
                 return True
